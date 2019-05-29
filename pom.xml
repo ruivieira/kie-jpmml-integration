@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools</artifactId>
+    <version>7.23.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-jpmml-integration</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>kie-dmn-jpmml</module>
+  </modules>
+  
+  <properties>
+    <version.org.jpmml.evaluator>1.4.9</version.org.jpmml.evaluator> <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 --> 
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jpmml</groupId>
+        <artifactId>pmml-evaluator</artifactId>
+        <version>${version.org.jpmml.evaluator}</version>       
+      </dependency>
+      <dependency>
+        <groupId>org.jpmml</groupId>
+        <artifactId>pmml-evaluator-extension</artifactId>
+        <version>${version.org.jpmml.evaluator}</version>   
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
