@@ -21,11 +21,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.dmg.pmml.FieldName;
 import org.jpmml.evaluator.DefaultVisitorBattery;
+import org.jpmml.evaluator.EvaluatorUtil;
 import org.jpmml.evaluator.FieldValue;
 import org.jpmml.evaluator.InputField;
 import org.jpmml.evaluator.LoadingModelEvaluatorBuilder;
@@ -72,14 +74,20 @@ public class DMNjPMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator
             arguments.put(inputName, inputValue);
             }
         Map<FieldName, ?> results = evaluator.evaluate(arguments);
+        Map<String, ?> resultsRecord = EvaluatorUtil.decodeAll(results);
 
         Map<String, Object> result = new HashMap<>();
-        for (OutputField of : evaluator.getOutputFields()) {
-            String outputFieldName = of.getName().getValue();
-            Optional<FieldName> fnKey = results.keySet().stream().filter(fn -> fn.getValue().equals(outputFieldName)).findFirst();
-            result.put(outputFieldName, EvalHelper.coerceNumber(fnKey.map(results::get).orElse(null)));
+        if (evaluator.getOutputFields().isEmpty()) {
+            for (Entry<String, ?> kv : resultsRecord.entrySet()) {
+                result.put(kv.getKey(), EvalHelper.coerceNumber(kv.getValue()));
+            }
+        } else {
+            for (OutputField of : evaluator.getOutputFields()) {
+                String outputFieldName = of.getName().getValue();
+                Optional<FieldName> fnKey = results.keySet().stream().filter(fn -> fn.getValue().equals(outputFieldName)).findFirst();
+                result.put(outputFieldName, EvalHelper.coerceNumber(fnKey.map(results::get).orElse(null)));
+            }
         }
-
         return new EvaluatorResultImpl(result, ResultType.SUCCESS);
     }
 

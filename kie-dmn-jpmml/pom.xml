@@ -119,6 +119,10 @@ This module will automatically disable kie-pmml Assembler.
       <artifactId>hamcrest-library</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
