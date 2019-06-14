@@ -19,8 +19,15 @@
     <version.org.jpmml.evaluator>1.4.9</version.org.jpmml.evaluator> <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 --> 
   </properties>
 
-  <dependencyManagement>
+  <dependencyManagement>	  
     <dependencies>
+      <dependency>
+	<groupId>org.kie</groupId>
+        <artifactId>kie-platform-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>		
       <dependency>
         <groupId>org.jpmml</groupId>
         <artifactId>pmml-evaluator</artifactId>
