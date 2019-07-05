@@ -16,10 +16,10 @@
     <semantic:businessKnowledgeModel id="_3b32809b-21cb-40b3-944c-cfad61baeee0" name="PMML">
         <semantic:variable name="PMML" id="_031d359a-afed-4cd0-98f3-ed63a355388e" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_0a7f0a83-0c8c-4025-94e4-a6bff3d5ac7b" kind="PMML" typeRef="Any" triso:expressionId="_2e6bd36e-94eb-42bd-bdbf-b74a621fd2f4">
-            <semantic:formalParameter name="sepal_length" typeRef="Any" id="_686afb4a-d686-446b-aaf6-93b688d67986"/>
-            <semantic:formalParameter name="sepal_width" typeRef="Any" id="_b2dcfebd-1640-4a53-b90f-b612c7491580"/>
-            <semantic:formalParameter name="petal_length" typeRef="Any" id="_ebcbe229-c201-4649-8148-cff6f6ac2aaf"/>
-            <semantic:formalParameter name="petal_width" typeRef="Any" id="_e15c016c-d20a-459d-8786-6264f97abb76"/>
+            <semantic:formalParameter name="sepal_length" typeRef="iris.sepal_length" id="_686afb4a-d686-446b-aaf6-93b688d67986"/>
+            <semantic:formalParameter name="sepal_width" typeRef="iris.sepal_width" id="_b2dcfebd-1640-4a53-b90f-b612c7491580"/>
+            <semantic:formalParameter name="petal_length" typeRef="iris.petal_length" id="_ebcbe229-c201-4649-8148-cff6f6ac2aaf"/>
+            <semantic:formalParameter name="petal_width" typeRef="iris.petal_width" id="_e15c016c-d20a-459d-8786-6264f97abb76"/>
             <semantic:context>
                 <semantic:contextEntry id="_133b4585-25f7-48b2-96af-676edf56fa06">
                     <semantic:variable name="document" id="_c26313aa-71b8-4401-a9da-08e66bfa6a23" typeRef="string"/>
