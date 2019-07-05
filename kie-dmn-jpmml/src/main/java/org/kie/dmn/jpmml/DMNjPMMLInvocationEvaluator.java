@@ -16,6 +16,7 @@
 
 package org.kie.dmn.jpmml;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -52,12 +53,14 @@ public class DMNjPMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator
     public DMNjPMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model) throws Exception {
         super(dmnNS, node, url, model);
         LoadingModelEvaluatorBuilder builder = new LoadingModelEvaluatorBuilder();
-        Supplier<DefaultVisitorBattery> visitors = () -> new DefaultVisitorBattery();
-        evaluator = builder.setLocatable(false)
-                           .setVisitors(visitors.get())
-                           .load(document.openStream())
-                           .build();
-        evaluator.verify();
+        try(InputStream documentStream = document.openStream()) {
+            Supplier<DefaultVisitorBattery> visitors = () -> new DefaultVisitorBattery();
+            evaluator = builder.setLocatable(false)
+                               .setVisitors(visitors.get())
+                               .load(documentStream)
+                               .build();
+            evaluator.verify();
+        }
     }
 
     @Override
