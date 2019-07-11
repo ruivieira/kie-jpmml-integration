@@ -22,13 +22,6 @@
   <dependencyManagement>	  
     <dependencies>
       <dependency>
-	<groupId>org.kie</groupId>
-        <artifactId>kie-platform-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>		
-      <dependency>
         <groupId>org.jpmml</groupId>
         <artifactId>pmml-evaluator</artifactId>
         <version>${version.org.jpmml.evaluator}</version>       
