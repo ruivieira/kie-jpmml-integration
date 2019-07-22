@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns="http://www.trisotech.com/definitions/_d9065b95-bc37-41dc-8566-8191af7b7867" id="_d9065b95-bc37-41dc-8566-8191af7b7867" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_d9065b95-bc37-41dc-8566-8191af7b7867" exporter="DMN Modeler" exporterVersion="6.2.5.201907170927" triso:logoChoice="Default">
+    <semantic:import namespace="dummy_integer"
+                     name="dummy_integer"
+                     locationURI="dummy_integer.pmml" 
+                     importType="http://www.dmg.org/PMML-4_3"
+                     />
+    <semantic:businessKnowledgeModel id="_810ee907-e43c-4d9a-b1c1-6e953820a49b" name="my pmml invocation">
+        <semantic:variable name="my pmml invocation" id="_2aa7a68f-7720-4464-a2a4-34e05756f6e4" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_1650c9e3-918a-4f7a-8025-3570b980b307" kind="PMML" typeRef="Any" triso:expressionId="_3ef4808a-9e51-4edc-a5fd-738b3c901696">
+            <semantic:formalParameter name="days" typeRef="Any" triso:typeRef="number" id="_0cacd11e-41f3-423b-9f21-c9b66b12623f"/>
+            <semantic:formalParameter name="delta" typeRef="Any" triso:typeRef="number" id="_ce59a961-20b6-4285-b3b0-035191fee285"/>
+            <semantic:context>
+                <semantic:contextEntry id="_01101770-6a6a-4627-9578-c1484267ddd8">
+                    <semantic:variable name="document" id="_6fe85a88-c984-4a02-bb45-243afb696ad9" typeRef="string"/>
+                    <semantic:literalExpression id="_77b5d8e9-0790-4478-9987-36baf4a7baea">
+                        <semantic:text>"dummy_integer"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_184d9b5c-dae5-4e5d-8bd1-05c557ca9c4e">
+                    <semantic:variable name="model" id="_87de7367-955c-495f-8525-3eead29f579c" typeRef="string"/>
+                    <semantic:literalExpression id="_41cfb1aa-b7a8-4af8-a8a0-94bb9c461716">
+                        <semantic:text>"LinearRegression"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decision id="_882474da-8fe6-490f-9ca0-7893758f7d56" name="hardcoded">
+        <semantic:variable name="hardcoded" id="_dda2ba1a-8d48-4e3d-b427-b93c082088f8" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_edf7f792-1a87-4587-b6b7-89ad804f2e7c">
+            <semantic:requiredKnowledge href="#_810ee907-e43c-4d9a-b1c1-6e953820a49b"/>
+        </semantic:knowledgeRequirement>
+        <semantic:invocation id="_c29d6e8b-11f7-4bab-a555-003efec703b1" typeRef="Any" triso:expressionId="_67c080ff-12a4-4778-8612-2ed5808edabb">
+            <semantic:literalExpression id="literal__c29d6e8b-11f7-4bab-a555-003efec703b1">
+                <semantic:text>my pmml invocation</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+                <semantic:parameter id="_06a095bc-e64a-4610-bb9b-3b17fc41f895" name="days"/>
+                <semantic:literalExpression id="_078264bb-c1bb-4445-a51e-4b12ffa49325">
+                    <semantic:text>1</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_90ba43ba-acb4-43e8-9434-f108ed73c6eb" name="delta"/>
+                <semantic:literalExpression id="_99a6776e-ba34-4774-be51-ab3a7d63cc60">
+                    <semantic:text>2</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+        </semantic:invocation>
+    </semantic:decision>
+</semantic:definitions>

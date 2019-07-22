@@ -16,6 +16,7 @@
 
 package org.kie.dmn.jpmml;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.junit.Test;
@@ -58,5 +59,24 @@ public class DMNInvokingjPMMLTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat((Map<String, Object>) result.get("Decision"), hasEntry("class", "Iris-versicolor"));
+    }
+
+    @Test
+    public void testDummyInteger() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("dummy_integer.dmn",
+                                                                                       DMNInvokingjPMMLTest.class,
+                                                                                       "dummy_integer.pmml");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_d9065b95-bc37-41dc-8566-8191af7b7867", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat((Map<String, Object>) result.get("hardcoded"), hasEntry("result", new BigDecimal(3)));
     }
 }

@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.dmg.pmml.FieldName;
@@ -87,8 +86,7 @@ public class DMNjPMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator
         } else {
             for (OutputField of : evaluator.getOutputFields()) {
                 String outputFieldName = of.getName().getValue();
-                Optional<FieldName> fnKey = results.keySet().stream().filter(fn -> fn.getValue().equals(outputFieldName)).findFirst();
-                result.put(outputFieldName, EvalHelper.coerceNumber(fnKey.map(results::get).orElse(null)));
+                result.put(outputFieldName, EvalHelper.coerceNumber(resultsRecord.getOrDefault(outputFieldName, null)));
             }
         }
         return new EvaluatorResultImpl(result, ResultType.SUCCESS);

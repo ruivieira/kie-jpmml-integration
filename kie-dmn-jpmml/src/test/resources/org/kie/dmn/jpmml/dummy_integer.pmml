@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_3" version="4.3">
+    <Header description="Test daysSinceDate">
+        <Application name="Nyoka" version="3.1.0"/>
+        <Timestamp>2019-06-13 15:11:46.831852</Timestamp>
+    </Header>
+    <MiningBuildTask>
+        <Extension value="Pipeline(memory=None,
+    steps=[('regressor',LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False))])"/>
+    </MiningBuildTask>
+    <DataDictionary numberOfFields="3">
+        <DataField name="days" optype="ordinal" dataType="integer"/>
+        <DataField name="delta" optype="continuous" dataType="integer"/>
+        <DataField name="result" optype="continuous" dataType="integer"/>
+    </DataDictionary>
+    <TransformationDictionary>
+        <DerivedField name="sumresult" displayName="sumresult" optype="continuous" dataType="integer" >
+            <Apply function="+">
+                <FieldRef field="days"/>
+                <FieldRef field="delta"/>
+            </Apply>
+        </DerivedField>
+    </TransformationDictionary>
+    <RegressionModel modelName="LinearRegression" functionName="regression">
+        <MiningSchema>
+            <MiningField name="days" usageType="active" optype="integer"/>
+            <MiningField name="delta" usageType="active" optype="integer"/>
+        </MiningSchema>
+        <Output>
+        <OutputField name="result" optype="continuous" dataType="integer" feature="transformedValue">
+            <FieldRef field="sumresult"/>
+        </OutputField>
+
+        </Output>
+        <RegressionTable intercept="0.0">
+        </RegressionTable>
+    </RegressionModel>
+</PMML>
