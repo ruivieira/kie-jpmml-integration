@@ -33,6 +33,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class DMNInvokingjPMMLTest {
 
@@ -53,12 +54,49 @@ public class DMNInvokingjPMMLTest {
 
         final DMNContext emptyContext = DMNFactory.newContext();
 
+        checkInvokeIris(runtime, dmnModel, emptyContext);
+    }
+
+    private void checkInvokeIris(final DMNRuntime runtime, final DMNModel dmnModel, final DMNContext emptyContext) {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
         assertThat((Map<String, Object>) result.get("Decision"), hasEntry("class", "Iris-versicolor"));
+    }
+
+    @Test
+    public void testInvokeIris_in1_wrong() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Invoke Iris_in1.dmn",
+                                                                                       DMNInvokingjPMMLTest.class,
+                                                                                       "iris model.pmml");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_91c67ae0-5753-4a23-ac34-1b558a006efd", "http://www.dmg.org/PMML-4_1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("in1", 99);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertTrue(dmnResult.getMessages().stream().anyMatch(m -> m.getSourceId().equals("in1"))); // ... 'in1': the dependency value '99' is not allowed by the declared type (DMNType{ iris : sepal_length })
+    }
+
+    @Test
+    public void testInvokeIris_in1_ok() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Invoke Iris_in1.dmn",
+                                                                                       DMNInvokingjPMMLTest.class,
+                                                                                       "iris model.pmml");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_91c67ae0-5753-4a23-ac34-1b558a006efd", "http://www.dmg.org/PMML-4_1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("in1", 4.3);
+
+        checkInvokeIris(runtime, dmnModel, context);
     }
 
     @Test
