@@ -16,7 +16,8 @@
   </modules>
   
   <properties>
-    <version.org.jpmml.evaluator>1.4.9</version.org.jpmml.evaluator> <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 --> 
+    <version.org.jpmml.evaluator>1.4.9</version.org.jpmml.evaluator> <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 -->
+    <version.org.glassfish.jaxb>2.4.0-b180830.0438</version.org.glassfish.jaxb>
   </properties>
 
   <dependencyManagement>	  
@@ -30,6 +31,14 @@
         <groupId>org.jpmml</groupId>
         <artifactId>pmml-evaluator-extension</artifactId>
         <version>${version.org.jpmml.evaluator}</version>   
+      </dependency>
+
+      <!-- jdk11 support -->
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>${version.org.glassfish.jaxb}</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
