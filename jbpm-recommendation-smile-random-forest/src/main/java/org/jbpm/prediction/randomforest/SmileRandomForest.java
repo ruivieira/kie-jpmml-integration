@@ -207,6 +207,8 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      */
     @Override
     public PredictionOutcome predict(Task task, Map<String, Object> inputData) {
+        logger.info("Predicting (for task " + task.toString() + ")");
+        logger.info("Input data = " + inputData.toString());
         Map<String, Object> outcomes = new HashMap<>();
         if (outcomeSet.size() >= 2) {
             model = new RandomForest(dataset, this.numberTrees);
@@ -219,7 +221,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
             final double confidence = posteriori[(int) prediction];
             outcomes.put("confidence", confidence);
 
-            logger.debug(inputData + ", prediction = " + predictionStr + ", confidence = " + confidence);
+            logger.info(inputData + ", prediction = " + predictionStr + ", confidence = " + confidence);
 
             return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
         } else {
@@ -236,6 +238,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      */
     @Override
     public void train(Task task, Map<String, Object> inputData, Map<String, Object> outputData) {
+        logger.info("Training (for task " + task.toString() + ")");
         logger.info("output data = " + outputData.toString());
         addData(inputData, outputData.get(outcomeAttribute.getName()));
     }
