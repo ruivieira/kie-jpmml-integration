@@ -143,22 +143,27 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      * @param outcome The value of the outcome (output data).
      */
     public void addData(Map<String, Object> data, Object outcome) {
-        final double[] features = new double[numAttributes];
-        int i = 0;
-        for (String attrName : smileAttributes.keySet()) {
+        logger.info("Data = " + data.toString());
+        logger.info("Outcome = " + outcome);
+        if (!data.get("TaskName").equals("PrepareHardwareSpec")) {
+            final double[] features = new double[numAttributes];
+            int i = 0;
+            for (String attrName : smileAttributes.keySet()) {
+                try {
+                    features[i] = smileAttributes.get(attrName).valueOf(data.get(attrName).toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                i++;
+            }
             try {
-                features[i] = smileAttributes.get(attrName).valueOf(data.get(attrName).toString());
+                final String outcomeStr = outcome.toString();
+                outcomeSet.add(outcomeStr);
+                dataset.add(features, outcomeAttribute.valueOf(outcomeStr));
+                System.out.println(dataset.toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            i++;
-        }
-        try {
-            final String outcomeStr = outcome.toString();
-            outcomeSet.add(outcomeStr);
-            dataset.add(features, outcomeAttribute.valueOf(outcomeStr));
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 
@@ -169,9 +174,11 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      * @return A feature vector as a array of doubles.
      */
     protected double[] buildFeatures(Map<String, Object> data) {
+        logger.info(data.toString());
         final double[] features = new double[numAttributes];
         for (int i = 0; i < numAttributes; i++) {
             final String attrName = attributeNames.get(i);
+            logger.info("attrName = " + attrName);
             try {
                 features[i] = smileAttributes.get(attrName).valueOf(data.get(attrName).toString());
             } catch (ParseException e) {
@@ -229,6 +236,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      */
     @Override
     public void train(Task task, Map<String, Object> inputData, Map<String, Object> outputData) {
+        logger.info("output data = " + outputData.toString());
         addData(inputData, outputData.get(outcomeAttribute.getName()));
     }
 }
