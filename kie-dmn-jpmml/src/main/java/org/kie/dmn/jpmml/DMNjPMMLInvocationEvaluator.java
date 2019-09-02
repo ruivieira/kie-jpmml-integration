@@ -17,7 +17,6 @@
 package org.kie.dmn.jpmml;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +32,7 @@ import org.jpmml.evaluator.InputField;
 import org.jpmml.evaluator.LoadingModelEvaluatorBuilder;
 import org.jpmml.evaluator.ModelEvaluator;
 import org.jpmml.evaluator.OutputField;
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.EvaluatorResult;
@@ -49,10 +49,10 @@ public class DMNjPMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator
     private static final Logger LOG = LoggerFactory.getLogger(DMNjPMMLInvocationEvaluator.class);
     private final ModelEvaluator<?> evaluator;
 
-    public DMNjPMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model) throws Exception {
-        super(dmnNS, node, url, model);
+    public DMNjPMMLInvocationEvaluator(String dmnNS, DMNElement node, Resource pmmlResource, String model) throws Exception {
+        super(dmnNS, node, pmmlResource, model);
         LoadingModelEvaluatorBuilder builder = new LoadingModelEvaluatorBuilder();
-        try(InputStream documentStream = document.openStream()) {
+        try (InputStream documentStream = documentResource.getInputStream()) {
             Supplier<DefaultVisitorBattery> visitors = () -> new DefaultVisitorBattery();
             evaluator = builder.setLocatable(false)
                                .setVisitors(visitors.get())
