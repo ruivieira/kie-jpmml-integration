@@ -210,23 +210,23 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
         logger.info("Predicting (for task " + task.toString() + ")");
         logger.info("Input data = " + inputData.toString());
         Map<String, Object> outcomes = new HashMap<>();
-        if (outcomeSet.size() >= 2) {
-            model = new RandomForest(dataset, this.numberTrees);
-            final double[] features = buildFeatures(inputData);
-            final double[] posteriori = new double[outcomeSet.size()];
-            double prediction = model.predict(features, posteriori);
-
-            String predictionStr = dataset.responseAttribute().toString(prediction);
-            outcomes.put(outcomeAttribute.getName(), predictionStr);
-            final double confidence = posteriori[(int) prediction];
-            outcomes.put("confidence", confidence);
-
-            logger.info(inputData + ", prediction = " + predictionStr + ", confidence = " + confidence);
-
-            return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
-        } else {
+//        if (outcomeSet.size() >= 2) {
+//            model = new RandomForest(dataset, this.numberTrees);
+//            final double[] features = buildFeatures(inputData);
+//            final double[] posteriori = new double[outcomeSet.size()];
+//            double prediction = model.predict(features, posteriori);
+//
+//            String predictionStr = dataset.responseAttribute().toString(prediction);
+//            outcomes.put(outcomeAttribute.getName(), predictionStr);
+//            final double confidence = posteriori[(int) prediction];
+//            outcomes.put("confidence", confidence);
+//
+//            logger.info(inputData + ", prediction = " + predictionStr + ", confidence = " + confidence);
+//
+//            return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
+//        } else {
             return new PredictionOutcome(0.0, this.confidenceThreshold, outcomes);
-        }
+ //       }
     }
 
     /**
@@ -240,6 +240,6 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
     public void train(Task task, Map<String, Object> inputData, Map<String, Object> outputData) {
         logger.info("Training (for task " + task.toString() + ")");
         logger.info("output data = " + outputData.toString());
-        addData(inputData, outputData.get(outcomeAttribute.getName()));
+       // addData(inputData, outputData.get(outcomeAttribute.getName()));
     }
 }
