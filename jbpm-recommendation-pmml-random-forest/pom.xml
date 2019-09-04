@@ -6,6 +6,7 @@
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm</artifactId>
     <version>7.27.0-SNAPSHOT</version>
+    <relativePath></relativePath>
   </parent>
 
   <artifactId>jbpm-recommendation-pmml-random-forest</artifactId>
@@ -16,7 +17,22 @@
 
   <name>jBPM :: Prediction :: PMML random Forest based prediction service</name>
   <description>PMML random Forest based prediction service</description>
-
+  
+  <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jpmml</groupId>
+          <artifactId>pmml-evaluator</artifactId>
+          <version>${pmml-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.jpmml</groupId>
+          <artifactId>pmml-evaluator-extension</artifactId>
+          <version>${pmml-version}</version>
+        </dependency>
+      </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -86,12 +102,10 @@
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator</artifactId>
-      <version>${pmml-version}</version>
     </dependency>
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator-extension</artifactId>
-      <version>${pmml-version}</version>
     </dependency>
 
   </dependencies>
