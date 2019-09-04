@@ -6,12 +6,32 @@
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm</artifactId>
     <version>7.27.0-SNAPSHOT</version>
+    <relativePath></relativePath>
   </parent>
 
   <artifactId>jbpm-recommendation-pmml-logistic-regression</artifactId>
+  
+  <properties>
+    <pmml-version>1.4.9</pmml-version>
+  </properties>
 
   <name>jBPM :: Prediction :: PMML logistic regression based prediction service</name>
   <description>PMML logistic regression based prediction service</description>
+  
+  <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jpmml</groupId>
+          <artifactId>pmml-evaluator</artifactId>
+          <version>${pmml-version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.jpmml</groupId>
+          <artifactId>pmml-evaluator-extension</artifactId>
+          <version>${pmml-version}</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -79,12 +99,10 @@
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator</artifactId>
-      <version>1.4.9</version>
     </dependency>
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator-extension</artifactId>
-      <version>1.4.9</version>
     </dependency>
 
   </dependencies>

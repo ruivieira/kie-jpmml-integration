@@ -5,18 +5,23 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.26.0-SNAPSHOT</version>
+    <version>7.27.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.kie</groupId>
+ 
   <artifactId>kie-jpmml-integration</artifactId>
   <packaging>pom</packaging>
 
   <modules>
     <module>kie-dmn-jpmml</module>
+    <module>jbpm-recommendation-smile-random-forest</module>
+    <module>jbpm-recommendation-smile-naivebayes</module>
+    <module>jbpm-recommendation-pmml-logistic-regression</module>
+    <module>jbpm-recommendation-pmml-random-forest</module>
   </modules>
   
   <properties>
-    <version.org.jpmml.evaluator>1.4.9</version.org.jpmml.evaluator> <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 --> 
+    <version.org.jpmml.evaluator>1.4.9</version.org.jpmml.evaluator> <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 -->
+    <version.org.glassfish.jaxb>2.4.0-b180830.0438</version.org.glassfish.jaxb>
   </properties>
 
   <dependencyManagement>	  
@@ -30,6 +35,14 @@
         <groupId>org.jpmml</groupId>
         <artifactId>pmml-evaluator-extension</artifactId>
         <version>${version.org.jpmml.evaluator}</version>   
+      </dependency>
+
+      <!-- jdk11 support -->
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>${version.org.glassfish.jaxb}</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

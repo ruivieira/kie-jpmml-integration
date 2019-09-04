@@ -6,6 +6,7 @@
         <groupId>org.jbpm</groupId>
         <artifactId>jbpm</artifactId>
         <version>7.27.0-SNAPSHOT</version>
+        <relativePath></relativePath>
     </parent>
 
     <artifactId>jbpm-recommendation-smile-random-forest</artifactId>
@@ -13,6 +14,16 @@
     <name>jBPM :: Prediction :: Random Forest based prediction service</name>
     <description>Random Forest based prediction service</description>
 
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>com.github.haifengl</groupId>
+          <artifactId>smile-core</artifactId>
+          <version>1.5.2</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+  
     <dependencies>
         <dependency>
             <groupId>org.kie</groupId>
@@ -79,8 +90,6 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
-            <version>1.5.2</version>
         </dependency>
-
     </dependencies>
 </project>

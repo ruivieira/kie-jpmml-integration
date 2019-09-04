@@ -3,17 +3,17 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-jpmml-integration</artifactId>
-    <version>7.26.0-SNAPSHOT</version>
+    <version>7.27.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-dmn-jpmml</artifactId>
-  
+
   <name>KIE :: Decision Model Notation :: jPMML extension support</name>
-  
+
   <description>
-Isolated optional module for license compliance.
-This module will automatically disable kie-pmml Assembler.
+    Isolated optional module for license compliance.
+    This module will automatically disable kie-pmml Assembler.
   </description>
-  
+
   <properties>
     <java.module.name>org.kie.dmn.jpmml</java.module.name>
   </properties>
@@ -38,7 +38,7 @@ This module will automatically disable kie-pmml Assembler.
   </dependencyManagement>
 
   <dependencies>
-  <!-- External dependencies -->
+    <!-- External dependencies -->
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator</artifactId>
@@ -55,7 +55,7 @@ This module will automatically disable kie-pmml Assembler.
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-model</artifactId>
     </dependency>
-  <!-- /External dependencies -->
+    <!-- /External dependencies -->
 
     <dependency>
       <groupId>org.kie</groupId>
@@ -95,6 +95,12 @@ This module will automatically disable kie-pmml Assembler.
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
       <scope>provided</scope>
     </dependency>
 
