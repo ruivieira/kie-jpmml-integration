@@ -16,6 +16,8 @@
 
 package org.jbpm.prediction.randomforest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.prediction.PredictionOutcome;
 import org.kie.internal.task.api.prediction.PredictionService;
@@ -41,6 +43,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
     protected List<String> attributeNames = new ArrayList<>();
     private RandomForest model = null;
     private Set<String> outcomeSet = new HashSet<>();
+    private Map<String, OrderDetails> orderDetails = new HashMap<>();
 
     public SmileRandomForest() {
         this(readConfigurationFromFile());
@@ -160,6 +163,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        logger.info(dataset.toString());
     }
 
     /**
@@ -201,20 +205,57 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
     @Override
     public PredictionOutcome predict(Task task, Map<String, Object> inputData) {
         Map<String, Object> outcomes = new HashMap<>();
-        if (outcomeSet.size() >= 2) {
-            model = new RandomForest(dataset, this.numberTrees);
-            final double[] features = buildFeatures(inputData);
-            final double[] posteriori = new double[outcomeSet.size()];
-            double prediction = model.predict(features, posteriori);
 
-            String predictionStr = dataset.responseAttribute().toString(prediction);
-            outcomes.put(outcomeAttribute.getName(), predictionStr);
-            final double confidence = posteriori[(int) prediction];
-            outcomes.put("confidence", confidence);
+        // the order is initiated
+        if (task.getName().equals("Prepare hardware spec")) {
+            String orderNumber = (String) inputData.get("orderNumber");
+            if (!orderDetails.containsKey(orderNumber)) {
+                OrderDetails orderDetail = new OrderDetails();
+                orderDetail.brand = task.getPeopleAssignments().getPotentialOwners().get(0).getId();
+                orderDetail.requestor = (String) inputData.get("requestor");
+                orderDetails.put(orderNumber, orderDetail);
+                logger.info("[predict] Creating order number {} from user {} for a {} laptop", orderNumber, orderDetail.requestor, orderDetail.brand);
+            }
+            return new PredictionOutcome(0.0, this.confidenceThreshold, outcomes);
+        }
 
-            logger.debug(inputData + ", prediction = " + predictionStr + ", confidence = " + confidence);
+        // specs being generated
+        if (task.getName().equals("Manager approval")) {
+            String orderNumber = (String) inputData.get("orderNumber");
 
-            return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
+            orderDetails.get(orderNumber).manager = task.getPeopleAssignments().getPotentialOwners().get(0).getId();
+            OrderDetails o = orderDetails.get(orderNumber);
+            logger.info("[predict] Sending order number {} from user {} for a {} laptop from approval with {}", orderNumber, o.requestor, o.brand, o.manager);
+
+            Map<String, Object> processedData = new HashMap<>();
+
+            processedData.put("brand", o.brand);
+            processedData.put("manager", o.manager);
+            processedData.put("requestor", o.requestor);
+
+            if (outcomeSet.size() >= 2) {
+                model = new RandomForest(dataset, this.numberTrees);
+                final double[] features = buildFeatures(processedData);
+                final double[] posteriori = new double[outcomeSet.size()];
+                double prediction = model.predict(features, posteriori);
+
+                String predictionStr = dataset.responseAttribute().toString(prediction);
+                outcomes.put(outcomeAttribute.getName(), predictionStr);
+                final double confidence = posteriori[(int) prediction];
+                outcomes.put("confidence", confidence);
+
+                logger.info(processedData + ", prediction = " + predictionStr + ", confidence = " + confidence);
+
+                return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
+            } else {
+                return new PredictionOutcome(0.0, this.confidenceThreshold, outcomes);
+            }
+        }
+
+        if (task.getName().equals("Place order") || task.getName().equals("Order rejected")) { // order approved
+
+            train(task, inputData, null);
+            return new PredictionOutcome(0.0, this.confidenceThreshold, outcomes);
         } else {
             return new PredictionOutcome(0.0, this.confidenceThreshold, outcomes);
         }
@@ -229,6 +270,65 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      */
     @Override
     public void train(Task task, Map<String, Object> inputData, Map<String, Object> outputData) {
-        addData(inputData, outputData.get(outcomeAttribute.getName()));
+        // the order is initiated
+        if (task.getName().equals("Prepare hardware spec")) {
+            String orderNumber = (String) inputData.get("orderNumber");
+            if (!orderDetails.containsKey(orderNumber)) {
+                OrderDetails orderDetail = new OrderDetails();
+                orderDetail.brand = task.getPeopleAssignments().getPotentialOwners().get(0).getId();
+                orderDetail.requestor = (String) inputData.get("requestor");
+                orderDetails.put(orderNumber, orderDetail);
+                logger.info("[train] Creating order number {} from user {} for a {} laptop", orderNumber, orderDetail.requestor, orderDetail.brand);
+            }
+            return;
+        }
+
+        // specs being generated
+        if (task.getName().equals("Manager approval")) {
+            String orderNumber = (String) inputData.get("orderNumber");
+
+            orderDetails.get(orderNumber).manager = task.getPeopleAssignments().getPotentialOwners().get(0).getId();
+            OrderDetails o = orderDetails.get(orderNumber);
+            logger.info("[train] Sending order number {} from user {} for a {} laptop from approval with {}", orderNumber, o.requestor, o.brand, o.manager);
+            return;
+        }
+
+        Map<String, Object> processedData = new HashMap<>();
+
+        if (task.getName().equals("Place order")) { // order approved
+            String orderNumber = (String) inputData.get("orderNumber");
+            OrderDetails o = orderDetails.get(orderNumber);
+
+            processedData.put("brand", o.brand);
+            processedData.put("manager", o.manager);
+            processedData.put("requestor", o.requestor);
+            addData(processedData, true);
+            logger.info("[train] Approved order number {} from user {} for a {} laptop from approval with {}", orderNumber, o.requestor, o.brand, o.manager);
+        }
+
+        if (task.getName().equals("Order rejected")) { // order rejected
+            String orderNumber = (String) inputData.get("Description");
+            OrderDetails o = orderDetails.get(orderNumber.substring(6, 19));
+            System.out.println(orderNumber.substring(6, 19));
+
+            processedData.put("brand", o.brand);
+            processedData.put("manager", o.manager);
+            processedData.put("requestor", o.requestor);
+            addData(processedData, false);
+            logger.info("[train] Rejected order number {} from user {} for a {} laptop from approval with {}", orderNumber, o.requestor, o.brand, o.manager);
+        }
+
+    }
+
+    class OrderDetails {
+
+        public String requestor;
+        public String manager;
+        public String brand;
+        public boolean approved;
+
+        public OrderDetails() {
+
+        }
     }
 }
