@@ -89,7 +89,9 @@ public class DMNjPMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator
                 result.put(outputFieldName, EvalHelper.coerceNumber(resultsRecord.getOrDefault(outputFieldName, null)));
             }
         }
-        return new EvaluatorResultImpl(result, ResultType.SUCCESS);
+
+        Object coercedResult = result.size() > 1 ? result : result.values().iterator().next();
+        return new EvaluatorResultImpl(coercedResult, ResultType.SUCCESS);
     }
 
 }
