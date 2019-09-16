@@ -45,12 +45,7 @@ public class PMMLRandomForestPredictionServiceProcessTest extends AbstractKieSer
     public static void cleanOnce() {
         System.clearProperty("org.jbpm.task.prediction.service");
     }
-    
-    @After
-    public void abortInstances() {
-        //instances.forEach(processInstanceId -> processService.abortProcessInstance(processInstanceId));
-    }
-    
+
     @Override
     protected List<String> getProcessDefinitionFiles() {
         List<String> processes = new ArrayList<String>();
