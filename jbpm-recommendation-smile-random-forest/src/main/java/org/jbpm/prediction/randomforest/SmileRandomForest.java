@@ -42,6 +42,10 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
     private RandomForest model = null;
     private Set<String> outcomeSet = new HashSet<>();
 
+    private void println(String format, Object... args) {
+        System.out.println("[SMILE RF]" + String.format(format, args));
+    }
+
     public SmileRandomForest() {
         this(readConfigurationFromFile());
     }
@@ -70,6 +74,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
         }
         numAttributes = smileAttributes.size();
         outcomeAttribute = createAttribute(outputFeatureName, outputFeatureType);
+        println("Stating the service with %s and %s attributes", numberTrees, numAttributes);
         dataset = new AttributeDataset("dataset", smileAttributes.values().toArray(new Attribute[numAttributes]), outcomeAttribute);
     }
 
@@ -83,46 +88,17 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
 
         final RandomForestConfiguration configuration = new RandomForestConfiguration();
 
-        InputStream inputStream = null;
         final Map<String, AttributeType> inputFeatures = new HashMap<>();
-        try {
-            Properties prop = new Properties();
-
-            inputStream = SmileRandomForest.class.getClassLoader().getResourceAsStream("inputs.properties");
-
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("Could not find the property file 'inputs.properties' in the classpath.");
-            }
-
-            for (Object propertyName : prop.keySet()) {
-                inputFeatures.put((String) propertyName, AttributeType.valueOf(prop.getProperty((String) propertyName)));
-            }
-
-        } catch (Exception e) {
-            logger.error("Exception: " + e);
-        }
+        inputFeatures.put("ActorId", AttributeType.NOMINAL);
+        inputFeatures.put("level", AttributeType.NOMINAL);
+        inputFeatures.put("item", AttributeType.NOMINAL);
         configuration.setInputFeatures(inputFeatures);
 
-        try {
-            Properties prop = new Properties();
+        configuration.setOutcomeName("approved");
+        configuration.setOutcomeType(AttributeType.NOMINAL);
+        configuration.setConfidenceThreshold(0.7);
+        configuration.setNumTrees(100);
 
-            inputStream = SmileRandomForest.class.getClassLoader().getResourceAsStream("output.properties");
-
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("Could not find the property file 'output.properties' in the classpath.");
-            }
-
-            configuration.setOutcomeName(prop.getProperty("name"));
-            configuration.setOutcomeType(AttributeType.valueOf(prop.getProperty("type")));
-            configuration.setConfidenceThreshold(Double.parseDouble(prop.getProperty("confidence_threshold")));
-            configuration.setNumTrees(Integer.parseInt(prop.getProperty("num_trees")));
-        } catch (Exception e) {
-            logger.error("Exception: " + e);
-        }
         return configuration;
     }
 
@@ -200,6 +176,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      */
     @Override
     public PredictionOutcome predict(Task task, Map<String, Object> inputData) {
+        println("Predicting with input data: %s", inputData.toString());
         Map<String, Object> outcomes = new HashMap<>();
         if (outcomeSet.size() >= 2) {
             model = new RandomForest(dataset, this.numberTrees);
@@ -212,6 +189,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
             final double confidence = posteriori[(int) prediction];
             outcomes.put("confidence", confidence);
 
+            println("prediction = %s, confidence = %f", predictionStr, confidence);
             logger.debug(inputData + ", prediction = " + predictionStr + ", confidence = " + confidence);
 
             return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
@@ -229,6 +207,9 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
      */
     @Override
     public void train(Task task, Map<String, Object> inputData, Map<String, Object> outputData) {
+        println("Training with input data: %s", inputData.toString());
+        println("Training with output data: %s", outputData.toString());
+
         addData(inputData, outputData.get(outcomeAttribute.getName()));
     }
 }
