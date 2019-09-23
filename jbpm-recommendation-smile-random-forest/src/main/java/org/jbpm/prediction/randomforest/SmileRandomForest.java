@@ -194,6 +194,7 @@ public class SmileRandomForest extends AbstractPredictionEngine implements Predi
 
             return new PredictionOutcome(confidence, this.confidenceThreshold, outcomes);
         } else {
+            outcomes.put("confidence", 0.0);
             return new PredictionOutcome(0.0, this.confidenceThreshold, outcomes);
         }
     }
