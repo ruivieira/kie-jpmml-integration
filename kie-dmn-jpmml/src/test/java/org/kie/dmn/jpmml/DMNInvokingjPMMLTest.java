@@ -31,7 +31,10 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -63,7 +66,7 @@ public class DMNInvokingjPMMLTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat((Map<String, Object>) result.get("Decision"), hasEntry("class", "Iris-versicolor"));
+        assertThat(result.get("Decision"), is("Iris-versicolor"));
     }
 
     @Test
@@ -115,6 +118,33 @@ public class DMNInvokingjPMMLTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat((Map<String, Object>) result.get("hardcoded"), hasEntry("result", new BigDecimal(3)));
+        assertThat(result.get("hardcoded"), is(new BigDecimal(3)));
+    }
+
+    @Test
+    public void testMultipleOutputs() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("invoke_iris_KNN.dmn",
+                                                                                       DMNInvokingjPMMLTest.class,
+                                                                                       "iris_KNN.pmml");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a76cdc83-83b1-4f9c-8cf8-5a0179e776d5", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        // > iris[150,]
+        //     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species  ID
+        // 150          5.9           3          5.1         1.8 virginica 150
+        final DMNContext result = dmnResult.getContext();
+        Map<String, Object> resultOfHardcoded = (Map<String, Object>) result.get("hardcoded");
+        assertThat(resultOfHardcoded.size(), greaterThan(1));
+        assertThat(resultOfHardcoded, hasEntry("Predicted_Species", "virginica"));
+        assertThat(resultOfHardcoded, hasKey("Predicted_Petal.Width"));
+        assertThat((BigDecimal) resultOfHardcoded.get("Predicted_Petal.Width"), is(closeTo(new BigDecimal("1.9333333333333336"), new BigDecimal("0.1"))));
+        // no special interest to check the other output fields as the above are the user-facing most interesting ones.
     }
 }
