@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -31,7 +32,25 @@ public class PMMLRandomForest extends AbstractPMMLBackend {
     public static final String IDENTIFIER = "PMMLRandomForest";
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRandomForest.class);
+    /**
+     * Reads a properties file to be used for service configuration.
+     * @param propertiesFilename A String with the properties filename
+     * @return A Properties object
+     * @throws IOException
+     */
+    private static Properties readProperties(String propertiesFilename) throws IOException {
+        Properties properties = new Properties();
 
+        InputStream inputStream = PMMLRandomForest.class.getClassLoader().getResourceAsStream(propertiesFilename);
+
+        if (inputStream != null) {
+            properties.load(inputStream);
+        } else {
+            throw new FileNotFoundException("Could not find the property file '" + propertiesFilename + "' in the classpath.");
+        }
+
+        return properties;
+    }
     /**
      * Reads the PMML model configuration from a properties files.
      * "inputs.properties" should contain the input attribute names as keys and (optional) attribute types as values
@@ -43,66 +62,34 @@ public class PMMLRandomForest extends AbstractPMMLBackend {
 
         final PMMLRandomForestConfiguration configuration = new PMMLRandomForestConfiguration();
 
-        InputStream inputStream = null;
         final List<String> inputFeatures = new ArrayList<>();
+
         try {
-            Properties prop = new Properties();
 
-            inputStream = PMMLRandomForest.class.getClassLoader().getResourceAsStream("inputs.properties");
+            Properties inputProperties = readProperties("inputs.properties");
 
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("Could not find the property file 'inputs.properties' in the classpath.");
-            }
-
-            for (Object propertyName : prop.keySet()) {
+            for (Object propertyName : inputProperties.keySet()) {
                 inputFeatures.add((String) propertyName);
             }
 
-        } catch (Exception e) {
-            logger.error("Exception: " + e);
-        }
-        configuration.setInputFeatures(inputFeatures);
+            configuration.setInputFeatures(inputFeatures);
 
-        try {
-            Properties prop = new Properties();
+            Properties outputProperties = readProperties("output.properties");
 
-            inputStream = PMMLRandomForest.class.getClassLoader().getResourceAsStream("output.properties");
+            configuration.setOutcomeName(outputProperties.getProperty("name"));
+            configuration.setConfidenceThreshold(Double.parseDouble(outputProperties.getProperty("confidence_threshold")));
 
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("Could not find the property file 'output.properties' in the classpath.");
-            }
+            Properties modelProperties = readProperties("model.properties");
+            String pmmlFilename = modelProperties.getProperty("filename");
 
-            configuration.setOutcomeName(prop.getProperty("name"));
-            configuration.setConfidenceThreshold(Double.parseDouble(prop.getProperty("confidence_threshold")));
-        } catch (Exception e) {
-            logger.error("Exception: " + e);
+            configuration.setModelFile(new File(PMMLRandomForest.class.getClassLoader().getResource(pmmlFilename).getFile()));
+
+            return configuration;
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not create service configuration.");
         }
 
-        File modelFile = null;
-        try {
-            Properties prop = new Properties();
-
-            inputStream = PMMLRandomForest.class.getClassLoader().getResourceAsStream("model.properties");
-
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("Could not find the property file 'model.properties' in the classpath.");
-            }
-
-            configuration.setModelFile(new File(PMMLRandomForest.class.getClassLoader().getResource(prop.getProperty("filename")).getFile()));
-        } catch (Exception e) {
-            logger.error("Exception: " + e);
-        }
-
-        return configuration;
     }
-
-
 
     public PMMLRandomForest() {
         this(readConfigurationFromFile());
@@ -174,7 +161,8 @@ public class PMMLRandomForest extends AbstractPMMLBackend {
         String predictionStr;
 
         Double prediction = (Double) result.get(outcomeFeatureName);
-        double confidence = Math.max(Math.abs(0.0 - prediction), Math.abs(1.0 - prediction));
+        System.out.println(result);
+        double confidence = Math.max(prediction, Math.abs(1.0 - prediction));
         long predictionInt = Math.round(prediction);
 
         if (predictionInt == 0) {

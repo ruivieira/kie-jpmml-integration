@@ -53,15 +53,16 @@ public abstract class AbstractPMMLBackend implements PredictionService {
                     .load(pmmlFile)
                     .build();
             _evalutator.verify();
-        } catch (IOException | SAXException | JAXBException e) {
-            e.printStackTrace();
-        } finally {
-            this.evaluator = _evalutator;
-        }
 
-        this.inputFields = evaluator.getInputFields();
-        this.targetFields = evaluator.getTargetFields();
-        this.outputFields = evaluator.getOutputFields();
+            this.evaluator = _evalutator;
+
+            this.inputFields = this.evaluator.getInputFields();
+            this.targetFields = evaluator.getTargetFields();
+            this.outputFields = evaluator.getOutputFields();
+
+        } catch (IOException | SAXException | JAXBException e) {
+            throw new RuntimeException("Could not initialise model");
+        }
     }
 
     /**
