@@ -161,7 +161,6 @@ public class PMMLRandomForest extends AbstractPMMLBackend {
         String predictionStr;
 
         Double prediction = (Double) result.get(outcomeFeatureName);
-        System.out.println(result);
         double confidence = Math.max(prediction, Math.abs(1.0 - prediction));
         long predictionInt = Math.round(prediction);
 
