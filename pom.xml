@@ -7,12 +7,14 @@
     <artifactId>kie-parent</artifactId>
     <version>7.33.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.kie</groupId>
+ 
   <artifactId>kie-jpmml-integration</artifactId>
   <packaging>pom</packaging>
 
   <modules>
     <module>kie-dmn-jpmml</module>
+    <module>jbpm-recommendation-pmml-logistic-regression</module>
+    <module>jbpm-recommendation-pmml-random-forest</module>
   </modules>
   
   <properties>
