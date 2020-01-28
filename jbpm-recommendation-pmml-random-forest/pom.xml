@@ -3,10 +3,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.jbpm</groupId>
-    <artifactId>jbpm</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-jpmml-integration</artifactId>
     <version>7.33.0-SNAPSHOT</version>
-    <relativePath></relativePath>
   </parent>
 
   <artifactId>jbpm-recommendation-pmml-random-forest</artifactId>
@@ -30,6 +29,35 @@
           <artifactId>pmml-evaluator-extension</artifactId>
           <version>${pmml-version}</version>
         </dependency>
+        <dependency>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-internal</artifactId>
+          <version>${version.org.kie}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-test-util</artifactId>
+          <version>${version.org.kie}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-test-util</artifactId>
+          <version>${version.org.kie}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-test</artifactId>
+          <version>${version.org.kie}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-kie-services</artifactId>
+          <version>${version.org.kie}</version>
+          <scope>test</scope>
+        </dependency>
       </dependencies>
   </dependencyManagement>
   
@@ -38,7 +66,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
