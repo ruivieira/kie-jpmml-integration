@@ -24,8 +24,15 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
+import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
+import org.kie.dmn.core.pmml.DMNPMMLModelInfo;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +42,9 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -146,5 +156,92 @@ public class DMNInvokingjPMMLTest {
         assertThat(resultOfHardcoded, hasKey("Predicted_Petal.Width"));
         assertThat((BigDecimal) resultOfHardcoded.get("Predicted_Petal.Width"), is(closeTo(new BigDecimal("1.9333333333333336"), new BigDecimal("0.1"))));
         // no special interest to check the other output fields as the above are the user-facing most interesting ones.
+
+        // additional import info.
+        Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
+        assertThat(pmmlImportInfo.keySet(), hasSize(1));
+        DMNImportPMMLInfo p0 = pmmlImportInfo.values().iterator().next();
+        assertThat(p0.getImportName(), is("test20190907"));
+        assertThat(p0.getModels(), hasSize(1));
+        DMNPMMLModelInfo m0 = p0.getModels().iterator().next();
+        assertThat(m0.getName(), is("kNN_model"));
+
+        Map<String, DMNType> outputFields = m0.getOutputFields();
+        CompositeTypeImpl output = (CompositeTypeImpl)outputFields.get("kNN_model");
+        assertEquals("test20190907", output.getNamespace());
+
+        Map<String, DMNType> fields = output.getFields();
+        SimpleTypeImpl out1 = (SimpleTypeImpl)fields.get("Predicted_Species");
+        assertEquals("test20190907", out1.getNamespace());
+        assertEquals(BuiltInType.STRING, out1.getFeelType());
+
+        SimpleTypeImpl out2 = (SimpleTypeImpl)fields.get("Predicted_Petal.Width");
+        assertEquals("test20190907", out2.getNamespace());
+        assertEquals(BuiltInType.NUMBER, out2.getFeelType());
+
+        SimpleTypeImpl out3 = (SimpleTypeImpl)fields.get("neighbor1");
+        assertEquals("test20190907", out3.getNamespace());
+        assertEquals(BuiltInType.STRING, out3.getFeelType());
+
+        SimpleTypeImpl out4 = (SimpleTypeImpl)fields.get("neighbor2");
+        assertEquals("test20190907", out4.getNamespace());
+        assertEquals(BuiltInType.STRING, out4.getFeelType());
+
+        SimpleTypeImpl out5 = (SimpleTypeImpl)fields.get("neighbor3");
+        assertEquals("test20190907", out5.getNamespace());
+        assertEquals(BuiltInType.STRING, out5.getFeelType());
+    }
+
+    @Test
+    public void testMultipleOutputsNoModelName() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("invoke_iris_KNN_noModelName.dmn",
+                                                                                       DMNInvokingjPMMLTest.class,
+                                                                                       "iris_KNN_noModelName.pmml");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a76cdc83-83b1-4f9c-8cf8-5a0179e776d5", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        // > iris[150,]
+        //     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species  ID
+        // 150          5.9           3          5.1         1.8 virginica 150
+        final DMNContext result = dmnResult.getContext();
+        Map<String, Object> resultOfHardcoded = (Map<String, Object>) result.get("hardcoded");
+        assertThat(resultOfHardcoded.size(), greaterThan(1));
+        assertThat(resultOfHardcoded, hasEntry("Predicted_Species", "virginica"));
+        assertThat(resultOfHardcoded, hasKey("Predicted_Petal.Width"));
+        assertThat((BigDecimal) resultOfHardcoded.get("Predicted_Petal.Width"), is(closeTo(new BigDecimal("1.9333333333333336"), new BigDecimal("0.1"))));
+        // no special interest to check the other output fields as the above are the user-facing most interesting ones.
+
+        // additional import info.
+        Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
+        assertThat(pmmlImportInfo.keySet(), hasSize(1));
+        DMNImportPMMLInfo p0 = pmmlImportInfo.values().iterator().next();
+        assertThat(p0.getImportName(), is("test20190907"));
+        assertThat(p0.getModels(), hasSize(1));
+        DMNPMMLModelInfo m0 = p0.getModels().iterator().next();
+        assertNull(m0.getName());
+
+        Map<String, DMNType> outputFields = m0.getOutputFields();
+
+        SimpleTypeImpl out1 = (SimpleTypeImpl)outputFields.get("Predicted_Species");
+        assertEquals(BuiltInType.UNKNOWN, out1.getFeelType());
+
+        SimpleTypeImpl out2 = (SimpleTypeImpl)outputFields.get("Predicted_Petal.Width");
+        assertEquals(BuiltInType.UNKNOWN, out2.getFeelType());
+
+        SimpleTypeImpl out3 = (SimpleTypeImpl)outputFields.get("neighbor1");
+        assertEquals(BuiltInType.UNKNOWN, out3.getFeelType());
+
+        SimpleTypeImpl out4 = (SimpleTypeImpl)outputFields.get("neighbor2");
+        assertEquals(BuiltInType.UNKNOWN, out4.getFeelType());
+
+        SimpleTypeImpl out5 = (SimpleTypeImpl)outputFields.get("neighbor3");
+        assertEquals(BuiltInType.UNKNOWN, out5.getFeelType());
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns="http://www.trisotech.com/definitions/_a76cdc83-83b1-4f9c-8cf8-5a0179e776d5" id="_a76cdc83-83b1-4f9c-8cf8-5a0179e776d5" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_a76cdc83-83b1-4f9c-8cf8-5a0179e776d5" exporter="DMN Modeler" exporterVersion="6.2.10.201909181637" triso:logoChoice="Default">
+    <semantic:import namespace="test20190907"
+                     name="test20190907"
+                     triso:fileId="eyJhdHRyaWJ1dGVzIjp7ImlkIjoiOTFjNTU3MzktOTcxYi00ZjYyLTk5MzgtMDUwYzNmZjg4YTkxIiwic2t1IjoiOTFjNTU3MzktOTcxYi00ZjYyLTk5MzgtMDUwYzNmZjg4YTkxIiwibmFtZSI6InRlc3QyMDE5MDkwNyIsInBhdGgiOiIvIiwibWltZXR5cGUiOiJhcHBsaWNhdGlvbi9wbW1sK3htbCIsInVwZGF0ZWQiOiIyMDE5LTA5LTIzVDA4OjM4OjI0WiIsInVwZGF0ZXIiOiJNYXR0ZW8gTW9ydGFyaSIsInVybCI6Imh0dHBzOi8vdGVzdC1yZWRoYXQudHJpc290ZWNoLmNvbS9wdWJsaWNhcGkvcmVwb3NpdG9yeWZpbGVjb250ZW50P21vZGU9anNvbiZwYXRoPSUyRiZhcGlrZXk9MjkyMDAzZjY5ODQwZTcxMiZyZXBvc2l0b3J5PWMyNjYwZGUwLTdhNzktNDZlOS1hMzljLWZjYjczYTEwYjVjZCZza3U9OTFjNTU3MzktOTcxYi00ZjYyLTk5MzgtMDUwYzNmZjg4YTkxJm1pbWV0eXBlPWFwcGxpY2F0aW9uJTJGcG1tbCUyQnhtbCIsImlzRm9sZGVyIjpmYWxzZX0sInJlcG9zaXRvcnlUeXBlIjoicHVibGljYXBpIiwicmVwb3NpdG9yeSI6eyJuYW1lIjoiMjAxOTA5MjMiLCJhcGlrZXkiOiIyOTIwMDNmNjk4NDBlNzEyIiwidXJsIjoiaHR0cHM6Ly90ZXN0LXJlZGhhdC50cmlzb3RlY2guY29tL3B1YmxpY2FwaSIsInJlcG9zaXRvcnlJZCI6ImMyNjYwZGUwLTdhNzktNDZlOS1hMzljLWZjYjczYTEwYjVjZCJ9fQ=="
+                     triso:fileName="20190923/test20190907"
+                     triso:fileType="PMML"
+                     locationURI="iris_KNN_noModelName.pmml"
+                     importType="http://www.dmg.org/PMML-4_3"/>
+    <semantic:businessKnowledgeModel id="_8d64e5b0-73ce-47e6-8449-2b1c384bdf2e" name="blackbox">
+        <semantic:variable name="blackbox" id="_c1a14aa2-14ef-4cdf-b492-3b7d3bb85f96" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_c13297f9-8c63-4d1d-bbf7-417eb93c1249" kind="PMML" typeRef="Any" triso:expressionId="_5aecf18a-6728-4641-8319-676275e0fedd">
+            <semantic:formalParameter name="Sepal.Length" typeRef="Any" triso:typeRef="number" id="_126b3a42-8280-49d6-9a31-18a50e1144a4"/>
+            <semantic:formalParameter name="Sepal.Width" typeRef="Any" triso:typeRef="number" id="_9560b9b1-0127-4014-b830-f45197a18832"/>
+            <semantic:formalParameter name="Petal.Length" typeRef="Any" triso:typeRef="number" id="_2619879d-22b2-4363-80e9-39fc8cb60c86"/>
+            <semantic:context>
+                <semantic:contextEntry id="_bc923373-d239-4aa1-ae60-83d58453d5ba">
+                    <semantic:variable name="document" id="_61a9011e-fa46-46d6-bcde-03ed02271dbd" typeRef="string"/>
+                    <semantic:literalExpression id="_8045b21f-0886-42f9-b815-05b9d2226155">
+                        <semantic:text>"test20190907"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_27e222ed-bca3-4928-9a3f-849045fa98ed">
+                    <semantic:variable name="model" id="_37084c03-115d-456d-b157-187e7b208723" typeRef="string"/>
+                    <semantic:literalExpression id="_843dade4-3386-4a51-ba86-84da4460f4f0">
+                        <semantic:text>"kNN_model"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <semantic:decision id="_751970fc-c2a7-46b8-85ff-291a640496f1" name="hardcoded">
+        <semantic:variable name="hardcoded" id="_688b9a3d-4b17-4b74-9c0d-ab155faf3730" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_b1052f60-2ed2-4c13-a6a8-14e3265acbea">
+            <semantic:requiredKnowledge href="#_8d64e5b0-73ce-47e6-8449-2b1c384bdf2e"/>
+        </semantic:knowledgeRequirement>
+        <semantic:invocation id="_567d9826-7e68-49bd-bf36-2c6d61084494" typeRef="Any" triso:expressionId="_91993a13-340f-46c7-b4f8-39b6622d6580">
+            <semantic:literalExpression id="literal__567d9826-7e68-49bd-bf36-2c6d61084494">
+                <semantic:text>blackbox</semantic:text>
+            </semantic:literalExpression>
+            <semantic:binding>
+                <semantic:parameter id="_75fd2a51-b22b-49ef-8c48-c03fd72a9f93" name="Sepal.Length"/>
+                <semantic:literalExpression id="_2e5fe3fc-cb55-4a30-ab0d-f713f192576e">
+                    <semantic:text>5.9</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_674e5ec9-cb92-457f-bac7-88786fb99f8a" name="Sepal.Width"/>
+                <semantic:literalExpression id="_7a765dc1-2cf5-4ffb-b337-b6dc3ff084ee">
+                    <semantic:text>3.0</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+            <semantic:binding>
+                <semantic:parameter id="_0bb295a2-6173-4432-bea6-80b556574fc9" name="Petal.Length"/>
+                <semantic:literalExpression id="_c878d9fc-031c-461e-9387-b280e1e1040c">
+                    <semantic:text>5.1</semantic:text>
+                </semantic:literalExpression>
+            </semantic:binding>
+        </semantic:invocation>
+    </semantic:decision>
+</semantic:definitions>
